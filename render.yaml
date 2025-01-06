@@ -1,17 +1,15 @@
 services:
   - type: web
-    name: rails-production
-    env: ruby
-    buildCommand: "./bin/render-build.sh"
-    startCommand: "bundle exec rails s"
+    name: nest-api
+    env: node
+    buildCommand: "npm install && npx prisma generate && npm run build"
+    startCommand: "npx prisma migrate deploy && npm run start:prod"
     envVars:
       - key: DATABASE_URL
         value: postgresql://newsposts_user:mNsjoNgwsIXZVCYeppIHPAq4qhnMkFNg@dpg-cttupibv2p9s738msb00-a/newsposts
         fromDatabase:
           name: postgres
           property: connectionString
-      - key: RAILS_MASTER_KEY
-        sync: false
       - key: CLOUDINARY_CLOUD_NAME
         value: dveqinvna
       - key: CLOUDINARY_API_KEY
