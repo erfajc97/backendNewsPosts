@@ -7,11 +7,14 @@ import {
   Query,
   UseInterceptors,
   UploadedFile,
+  HttpStatus,
+  HttpCode,
+  NotFoundException,
+  FileTypeValidator,
+  MaxFileSizeValidator,
+  ParseFilePipe,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { v4 as uuid } from 'uuid';
-
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 
@@ -20,35 +23,56 @@ export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Post()
-  @UseInterceptors(
-    FileInterceptor('image', {
-      storage: diskStorage({
-        destination: './uploads',
-        filename: (req, file, callback) => {
-          const ext = file.originalname.split('.').pop();
-          const filename = `${uuid()}.${ext}`;
-          callback(null, filename);
-        },
-      }),
-    }),
-  )
-  createPost(
+  @HttpCode(HttpStatus.CREATED)
+  @UseInterceptors(FileInterceptor('image'))
+  async createPost(
     @Body() createPostDto: CreatePostDto,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 10 }),
+          new FileTypeValidator({ fileType: '.(png|jpg|jpeg)' }),
+        ],
+      }),
+    ) file: Express.Multer.File,
   ) {
-    const imagePath = file ? file.path : null;
-
-    return this.postsService.createPostService(createPostDto, imagePath);
+    const post = await this.postsService.createPostService(createPostDto, file);
+    return {
+      statusCode: HttpStatus.CREATED,
+      message: 'Post creado exitosamente',
+      response: post,
+    };
   }
 
-  @Get()
-  getAllPosts(@Query('page') page?: string) {
-    const pageNumber = page ? parseInt(page, 10) : 1;
-    return this.postsService.getAllPostsService(pageNumber);
-  }
+    @Get()
+    @HttpCode(HttpStatus.OK)
+      async getAllPosts(@Query('page') page?: string) {
+        const pageNumber = page ? parseInt(page, 10) : 1; 
+        const posts = await this.postsService.getAllPostsService(pageNumber); 
+        return {
+          statusCode: HttpStatus.OK,
+          message: 'Posts obtenidos exitosamente',
+          response: posts,
+        };
+    }
+
 
   @Get(':id')
-  getPostById(@Param('id') id: string) {
-    return this.postsService.getPostByIdService(id);
+  @HttpCode(HttpStatus.OK)
+  async getPostById(@Param('id') id: string) {
+    const post = await this.postsService.getPostByIdService(id);
+    if (!post) {
+      throw new NotFoundException({
+        statusCode: HttpStatus.NOT_FOUND,
+        message: 'Post no encontrado',
+        error: 'Not Found',
+      });
+    }
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Post obtenido exitosamente',
+      response: post,
+    };
   }
+
 }
