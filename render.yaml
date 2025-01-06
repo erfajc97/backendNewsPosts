@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: rails-production
+    env: ruby
+    buildCommand: "./bin/render-build.sh"
+    startCommand: "bundle exec rails s"
+    envVars:
+      - key: DATABASE_URL
+        value: postgresql://newsposts_user:mNsjoNgwsIXZVCYeppIHPAq4qhnMkFNg@dpg-cttupibv2p9s738msb00-a/newsposts
+        fromDatabase:
+          name: postgres
+          property: connectionString
+      - key: RAILS_MASTER_KEY
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        value: dveqinvna
+      - key: CLOUDINARY_API_KEY
+        value: 563948796486219  
+      - key: CLOUDINARY_API_SECRET
+        value: oF9CpF8M9GeiBVaWaNwPmeLZkg8
+
+databases:
+  - name: postgres
+    ipAllowList: []
+    databaseName: railway
+    user: postgres
