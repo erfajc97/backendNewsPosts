@@ -10,6 +10,9 @@ datasource db {
 model Post {
   id        String   @id @default(cuid())
   title     String
+  author      String   @default("Anonymous") 
+  tags        String   @default("tecnology")          
+  timeToRead  Int      @default(5)           
   image     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
