@@ -3,7 +3,7 @@ export class Post {
   title: string;
   image: string;
   description?: string;
-  timeToRead?: number;
+  timeToRead?: string;
   tags?: string;
 }
 

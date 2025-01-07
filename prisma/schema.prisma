@@ -13,7 +13,7 @@ model Post {
   author      String   @default("Anonymous") 
   tags        String   @default("tecnology")         
   description String   @default("description")
-  timeToRead  Int   @default(5)           
+  timeToRead  String   @default("6")           
   image     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

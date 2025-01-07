@@ -1,5 +1,6 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
 import { Post } from '@prisma/client';
+import { Transform } from 'class-transformer';
 
 export class CreatePostDto implements Partial<Post> {
   @IsNotEmpty()
@@ -15,8 +16,9 @@ export class CreatePostDto implements Partial<Post> {
   description?: string;
 
   @IsOptional()
-  @IsNumber()
-  timeToRead?: number;
+  @IsString()
+  @Transform(({ value }) => value.toString())
+  timeToRead?: string;
 
   @IsOptional()
   @IsString()
