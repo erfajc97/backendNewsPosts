@@ -13,6 +13,7 @@ import {
   FileTypeValidator,
   MaxFileSizeValidator,
   ParseFilePipe,
+  Delete,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PostsService } from './posts.service';
@@ -71,6 +72,17 @@ export class PostsController {
     return {
       statusCode: HttpStatus.OK,
       message: 'Post obtenido exitosamente',
+      response: post,
+    };
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.OK)
+  async deletePost(@Param('id') id: string) {
+    const post = await this.postsService.deletePostService(id);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Post eliminado exitosamente',
       response: post,
     };
   }

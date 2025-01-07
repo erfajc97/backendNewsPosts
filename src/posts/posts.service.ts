@@ -84,4 +84,9 @@ async getAllPostsService(pageNumber: number) {
     return post;
   }
 
+  async deletePostService(id: string) {
+    const post = await this.prismaService.post.delete({ where: { id } });
+    return post;
+  }
+
 }
