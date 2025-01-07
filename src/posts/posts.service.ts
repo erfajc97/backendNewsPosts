@@ -41,6 +41,9 @@ export class PostsService {
     id: v4(),
     title: createPostDto.title,
     image: imageUrl,
+    description: createPostDto.description,
+    timeToRead: createPostDto.timeToRead,
+    tags: createPostDto.tags,
   };
   const savedPost = await this.prismaService.post.create({ data: newPost });
   return savedPost;
