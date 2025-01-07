@@ -11,7 +11,8 @@ model Post {
   id        String   @id @default(cuid())
   title     String
   author      String   @default("Anonymous") 
-  tags        String   @default("tecnology")          
+  tags        String   @default("tecnology")         
+  description String   @default("description")
   timeToRead  Int      @default(5)           
   image     String
   createdAt DateTime @default(now())
