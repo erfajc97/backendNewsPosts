@@ -68,7 +68,7 @@ export class PostsService {
         this.prismaService.post.findMany({
           skip: startIndex,
           take: pageSize,
-          orderBy: { createdAt: 'desc' },
+          orderBy: { createdAt: 'asc' },
         }),
         this.prismaService.post.count(),
       ]);
